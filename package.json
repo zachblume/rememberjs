@@ -1,0 +1,18 @@
+{
+  "name": "remember.js",
+  "version": "1.0.0",
+  "description": "An observable JS array that functions as a in-memory reactive database, with replication.",
+  "main": "app.js",
+  "dependencies": {
+    "nodemon": "^2.0.20",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
