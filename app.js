@@ -29,7 +29,7 @@ const [table, b] = new Table("people", {
 
 // Pass the entire updated table on each change
 // table.onSnapshot((fullTable) => log("Snapshot: " + fullTable.length));
-table.onSnapshot((a) => console.log("onSnapshot()"));
+// table.onSnapshot((a) => console.log("onSnapshot()"));
 
 // You can have more than 1 handler!
 // table.onSnapshot((fullTable) => log("You can have more than 1 handler!"));
