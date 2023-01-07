@@ -71,7 +71,6 @@ export function observeObject(obj, child = false) {
       // }
       // If property is changed TO an object.
       if (typeof value === "object" && !propertySubscriptions.has(prop)) {
-        console.log({ target, prop, value, receiver });
         value = observeChildObject(target, prop, value);
       }
       // If property is changed FROM an object.

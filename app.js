@@ -5,6 +5,17 @@ function time(name, operation) {
   console.timeEnd(name);
 }
 
+function stringify(array) {
+  var string = "[";
+  array.forEach((row) => {
+    string += "{";
+    Object.keys(row).forEach((key) => (string += `${key}:${row[key]},`));
+    string += "}, ";
+  });
+  string += "]";
+  return string;
+}
+
 const log = console.log;
 
 // Import the table object
@@ -17,22 +28,27 @@ const [table, b] = new Table("people", {
 });
 
 // Pass the entire updated table on each change
-table.onSnapshot((fullTable) => log("Snapshot: " + JSON.stringify(fullTable)));
+// table.onSnapshot((fullTable) => log("Snapshot: " + fullTable.length));
+table.onSnapshot((a) => console.log("onSnapshot()"));
 
 // You can have more than 1 handler!
 // table.onSnapshot((fullTable) => log("You can have more than 1 handler!"));
 
 // Right now, only snapshot is working...
-// table.subscribe((change) => log("Update! " + JSON.stringify(change)));
+// table.subscribe((change) => log("Update! " + stringify(change)));
 
 // Add one thousand random people rows to table
-const fillerDataLength = 10;
+const fillerDataLength = 1000 * 10;
 const randomName = () =>
   Math.random()
     .toString(36)
     .replace(/[^a-z]/g, "");
-for (let i = 0; i < fillerDataLength; i++)
-  table.push({ id: i, name: randomName() }); // 16ms for 10k rows
+
+time("Table push performance", () => {
+  for (let i = 0; i < fillerDataLength; i++)
+    table.push({ id: i, name: randomName() }); // 16ms for 10k rows
+});
+console.log(table.length);
 
 // Delete an element from table, using .filter syntax
 time("Delete operation performance", () => table.delete((row) => row.id > 2));
