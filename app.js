@@ -1,72 +1,54 @@
-console.time();
-function time(name, operation) {
-  console.time(name);
-  operation();
-  console.timeEnd(name);
-}
-
-function stringify(array) {
-  var string = "[";
-  array.forEach((row) => {
-    string += "{";
-    Object.keys(row).forEach((key) => (string += `${key}:${row[key]},`));
-    string += "}, ";
-  });
-  string += "]";
-  return string;
-}
-
-const log = console.log;
-
 // Import the table object
 import { Table } from "./remember.js";
 
-// Load a array table from indexedDB
+// Loads a proxied array
+// TODO: Load a array table from indexedDB
 const [table, b] = new Table("people", {
   syncFromLocal: true, // Synchronously from local ... i.e., do not proceed until stale is recieved
   asyncFromServer: true, // Pull and push asychronously to server, i.e. proceed and transact in async
 });
 
-// Pass the entire updated table on each change
-// table.onSnapshot((fullTable) => log("Snapshot: " + fullTable.length));
-// table.onSnapshot((a) => console.log("onSnapshot()"));
+// Subscribe a callback to the entire updated table, on each change
+table.onSnapshot((fullTable) =>
+  console.log("Change event! Array size is now " + fullTable.length + ".")
+);
 
-// You can have more than 1 handler!
-// table.onSnapshot((fullTable) => log("You can have more than 1 handler!"));
+// TODO: Right now, only snapshot is working...
+// table.subscribe((change) => console.log("Update! " + stringify(change)));
 
-// Right now, only snapshot is working...
-// table.subscribe((change) => log("Update! " + stringify(change)));
+console.warn("Push elements one at a time");
+table.push({ id: 1, name: "John", companyId: 1 });
+table.push({ id: 2, name: "Jane", companyId: 1 });
 
-// Add one thousand random people rows to table
-const fillerDataLength = 1000 * 10;
-const randomName = () =>
-  Math.random()
-    .toString(36)
-    .replace(/[^a-z]/g, "");
+console.warn("Push multiple elements simultaneously");
+table.push(
+  { id: 3, name: "Marie", companyId: 2 },
+  { id: 4, name: "Thomas", companyId: 2 }
+);
 
-time("Table push performance", () => {
-  for (let i = 0; i < fillerDataLength; i++)
-    table.push({ id: i, name: randomName() }); // 16ms for 10k rows
-});
-console.log(table.length);
+console.warn("Delete an element from table, using .filter syntax");
+table.delete((row) => row.id > 3);
 
-// Delete an element from table, using .filter syntax
-time("Delete operation performance", () => table.delete((row) => row.id > 2));
+console.warn("Select elements by property filter from table");
+const result1 = table.filter((row) => row.id > 0);
+const result2 = table.filter((row) => row.name?.match(/John/));
+console.log(result1.length, result2.length);
 
-// Select elements from table
-table.filter((row) => row.id == 5); // ID match
-table.filter((row) => row.name.match(/zach/, "i")); // Case insensitive name match
+console.warn("Join two tables to produce a view");
+const joinedTables = table.leftJoin(
+  [
+    { companyId: 1, company: "Microsoft", location: "Seattle" },
+    { companyId: 2, company: "Google", location: "Mountain View" },
+  ],
+  "companyId"
+);
+console.log("joinedTables", joinedTables);
 
-// Join two tables to produce a view
-// var joinedTables = table.leftJoin(tableTwo);
+console.warn("Re-assign an array element");
+table[1] = { newObject: "" };
 
-console.log("table[2] = { newobject: true };");
-table[2] = { newobject: true };
+console.warn("Re-assign the property of one array element, bracket notation");
+table[0]["name"] = "Zach";
 
-console.log('table[1].name = "zach";');
-table[1].name = "zach";
-table[1].name = "zdfgach";
-table[1].name = "zacdfgh";
-
-console.log("end of app.js!");
-console.timeEnd();
+console.warn("Re-assign the property of one array element, dot notation");
+table[0].name = "John";

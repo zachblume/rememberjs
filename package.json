@@ -4,15 +4,25 @@
   "description": "An observable JS array that functions as a in-memory reactive database, with replication.",
   "main": "app.js",
   "dependencies": {
+    "benchmark": "^2.1.4",
+    "express": "^4.18.2",
+    "html-webpack-plugin": "^5.5.0",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
-    "rxjs": "^7.8.0"
+    "path": "^0.12.7",
+    "rxjs": "^7.8.0",
+    "webpack": "^5.75.0",
+    "webpack-dev-server": "^4.11.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "build": "webpack",
+    "start": "serve dist"
   },
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "webpack-cli": "^5.0.1"
+  }
 }
